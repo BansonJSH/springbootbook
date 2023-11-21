@@ -31,11 +31,6 @@ public class WebSecurityConfig {
     @Bean
     public WebSecurityCustomizer configure() {
         return (web) -> web.ignoring()
-                .requestMatchers(toH2Console())
-                .requestMatchers(new AntPathRequestMatcher("/static/**"))
-                .requestMatchers(new AntPathRequestMatcher("/resources/**"))
-                .requestMatchers(new AntPathRequestMatcher("/favicon.ico/**"))
-                .requestMatchers(new AntPathRequestMatcher("/error"))
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
