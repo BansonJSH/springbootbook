@@ -9,7 +9,7 @@ public class FileConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/img/**")
-                .addResourceLocations("file:///home/ubuntu/springbootbook/");
+        registry.addResourceHandler("/static/img/**")
+                .addResourceLocations("file:///home/ubuntu/springbootbook");
     }
 }
