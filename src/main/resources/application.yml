@@ -1,3 +1,11 @@
 Spring:
   profiles:
     include: oauth
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      authentication-database: admin
+      username: root
+      password: root
+      database: comment

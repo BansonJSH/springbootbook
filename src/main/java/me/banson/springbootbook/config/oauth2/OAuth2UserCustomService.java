@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -28,19 +29,19 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
         OAuth2User user = super.loadUser(userRequest);
         saveOrUpdate(user);
         UsernamePasswordAuthenticationToken.authenticated(user, "", List.of(new SimpleGrantedAuthority("user")));
-        System.out.println(user);
         return user;
     }
 
     private User saveOrUpdate(OAuth2User oAuth2User) {
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
+        String password = String.valueOf(UUID.randomUUID());
         User user = userRepository.findByEmail(email)
                 .map(entity -> entity.update(name))
                 .orElse(User.builder()
                         .email(email)
                         .nickname(name)
-                        .googleId(oAuth2User.getName())
+                        .password(password)
                         .build());
         return userRepository.save(user);
     }

@@ -1,6 +1,7 @@
 package me.banson.springbootbook.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,9 +24,11 @@ public class Article {
     private Long id;
 
     @Column(name = "title", nullable = false)
+    @NotEmpty
     private String title;
 
     @Column(name = "content", nullable = false)
+    @NotEmpty
     private String content;
 
     @CreatedDate
@@ -37,6 +40,7 @@ public class Article {
     private LocalDateTime updatedAt;
 
     @Column(name = "author", nullable = false)
+    @NotEmpty
     private String author;
 
     @Builder

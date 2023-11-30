@@ -1,6 +1,10 @@
 package me.banson.springbootbook.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,8 +33,10 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(name = "email", nullable = false, unique = true)
+    @Email
     private String email;
 
+    @NotEmpty
     @Column(name = "password")
     private String password;
 
@@ -42,6 +48,7 @@ public class User implements UserDetails {
     @Column
     private LocalDateTime updatedAt;
 
+    @NotEmpty
     @Column(name = "nickname", unique = true)
     private String nickname;
 

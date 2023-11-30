@@ -7,16 +7,24 @@
 </head>
 <body>
 <div class="p-5 mb-5 text-center</> bg-light">
-    <h1 class="mb-3">banson's Blog</h1>
+    <h1 class="mb-3"><a th:href="@{/articles}">banson's Blog</a></h1>
     <h4 class="mb-3">환영합니다.</h4>
 </div>
 
+<!--글등록과 상세보기-->
 <div class="container">
     <button type="button" id="create-btn" th:onclick="|location.href='@{new-article}'|"
-            class="btn btn-secondary btn-sm mb-3">글 등록</button>
-    <div class="row-6" th:each="item : ${articles}">
+            class="btn btn-secondary btn-sm mb-3">글 등록
+    </button>
+    <form th:action="@{/articles(page=1)}" method="get">
+        <label>검색: </label>
+        <input type="text" name="search">
+        <button class="btn btn-outline-dark" type="submit">제목 검색</button>
+    </form>
+    <br>
+    <div class="row-6" th:each="item, i: ${articles}">
         <div class="card">
-            <div class="card-header" th:text="${item.id}">
+            <div class="card-header" th:text="${nowPage*3 + i.index+1}">
             </div>
             <div class="card-body">
                 <h5 class="card-title" th:text="${item.title}"></h5>
@@ -28,10 +36,41 @@
         <br>
     </div>
 
+<!--paging 부분-->
+    <div th:if="${!articles.isEmpty()}">
+        <ul class="pagination justify-content-center">
+
+            <li class="page-item">
+                <a class="page-link" th:href="@{/articles(page=1,search=${search})}">첫 페이지 </a>
+            </li>
+
+            <li class="page-item" th:if="${nowPage != firstPage}">
+                <a class="page-link" th:href="@{/articles(page=${nowPage},search=${search})}"> 이전 </a>
+            </li>
+
+            <li class="page-item" th:each="page:${#numbers.sequence(firstPage+1,lastPage+1)}">
+                    <a class="page-link" th:if="${page != nowPage+1}" th:href="@{/articles(page=${page},search=${search})}" th:text ="${page}"></a>
+                    <span class="page-link" th:if="${page==nowPage+1}" th:text ="${page}" ></span>
+            </li>
+
+            <li class="page-item" th:if="${nowPage != lastPage}">
+                <a class="page-link" th:href="@{/articles(page=${nowPage+2},search=${search})}"> 다음 </a>
+            </li>
+
+            <li class="page-item">
+                <a class="page-link" th:href="@{/articles(page=${articles.totalPages},search=${search})}"> 마지막 페이지</a>
+            </li>
+        </ul>
+    </div>
+
+<!--로그인, 회원가입, 로그아웃-->
     <a th:if="${name == 'null'}" type="button" class="btn btn-secondary" th:href="@{/login}">로그인</a>
-    <button th:if="${name == 'null'}" type="button" class="btn btn-secondary" onclick="location.href='/signup'">회원가입</button>
+    <button th:if="${name == 'null'}" type="button" class="btn btn-secondary" onclick="location.href='/signup'">회원가입
+    </button>
     <p th:unless="${name == 'null'}" th:text="|환영합니다 ${name}님|"></p>
-    <button th:unless="${name == 'null'}" type="button" class="btn btn-secondary" onclick="location.href='/logout'">로그아웃</button>
+    <button th:unless="${name == 'null'}" type="button" class="btn btn-secondary" onclick="location.href='/logout'">
+        로그아웃
+    </button>
 </div>
 
 <script src="/js/article.js"></script>

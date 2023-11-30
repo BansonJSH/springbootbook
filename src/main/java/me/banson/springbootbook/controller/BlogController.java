@@ -8,6 +8,9 @@ import me.banson.springbootbook.dto.ArticleResponse;
 import me.banson.springbootbook.dto.UpdateArticleRequest;
 import me.banson.springbootbook.service.BlogService;
 import me.banson.springbootbook.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,11 +29,10 @@ public class BlogController {
     @PostMapping("api/articles")
     public ResponseEntity<Article> addArticle(@RequestBody AddArticleRequest request, Principal principal) {
         String name;
-        if (!principal.getName().contains("@")) {
-            name = userService.findByGoogleId(principal.getName()).getNickname();
-        }
-        else {
+        if (principal.getName().contains("@")) {
             name = userService.findByEmail(principal.getName()).getNickname();
+        } else {
+            name = userService.findByGoogleId(principal.getName()).getNickname();
         }
         Article savedArticle = blogService.save(request, name);
 
@@ -40,8 +42,8 @@ public class BlogController {
 
     //게시물 전체 조회
     @GetMapping("api/articles")
-    public ResponseEntity<List<ArticleResponse>> findAllArticle() {
-        List<ArticleResponse> articles = blogService.findAll()
+    public ResponseEntity<Page<ArticleResponse>> findAllArticle(@PageableDefault(sort = "id", size = 5)Pageable pageable, String search) {
+        Page<ArticleResponse> articles = (Page<ArticleResponse>) blogService.findByTitleContaining(pageable, search)
                 .stream()
                 .map(ArticleResponse::new)
                 .toList();
