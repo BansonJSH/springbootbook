@@ -7,6 +7,7 @@ import me.banson.springbootbook.dto.AddArticleRequest;
 import me.banson.springbootbook.dto.ArticleResponse;
 import me.banson.springbootbook.dto.UpdateArticleRequest;
 import me.banson.springbootbook.service.BlogService;
+import me.banson.springbootbook.service.CommentService;
 import me.banson.springbootbook.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,7 @@ public class BlogController {
 
     private final BlogService blogService;
     private final UserService userService;
+    private final CommentService commentService;
 
     //게시물 만들기
     @PostMapping("api/articles")
@@ -65,6 +67,7 @@ public class BlogController {
     @DeleteMapping("api/articles/{id}")
     public ResponseEntity<Void> deleteArticle(@PathVariable long id) {
         blogService.delete(id);
+        commentService.deleteByArticleId(id);
 
         return ResponseEntity.ok().build();
     }

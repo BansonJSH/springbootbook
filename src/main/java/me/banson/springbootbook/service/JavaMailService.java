@@ -8,6 +8,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Random;
+
 @Service
 @RequiredArgsConstructor
 public class JavaMailService {
@@ -15,7 +17,6 @@ public class JavaMailService {
     @Autowired
     private final JavaMailSender javaMailSender;
 
-    @Async
     public Boolean sendMail(AddUserRequest dto) throws Exception {
         boolean msg = false;
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -25,5 +26,15 @@ public class JavaMailService {
         simpleMailMessage.setText("회원가입 축하드려용" + dto.getNickname() + " 님");
         javaMailSender.send(simpleMailMessage);
         return true;
+    }
+
+    @Async
+    public void sendValidNumber(AddUserRequest dto, String validNumber) throws Exception {
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+
+        simpleMailMessage.setTo(dto.getEmail());
+        simpleMailMessage.setSubject("인증번호");
+        simpleMailMessage.setText("인증번호는 " + validNumber+ " 입니다.");
+        javaMailSender.send(simpleMailMessage);
     }
 }

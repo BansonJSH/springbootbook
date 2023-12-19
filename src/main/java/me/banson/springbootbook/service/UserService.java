@@ -4,9 +4,12 @@ import lombok.RequiredArgsConstructor;
 import me.banson.springbootbook.domain.User;
 import me.banson.springbootbook.dto.AddUserRequest;
 import me.banson.springbootbook.repository.UserRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Random;
 
 @RequiredArgsConstructor
 @Service
@@ -24,13 +27,27 @@ public class UserService {
                 .password(bCryptPasswordEncoder.encode(dto.getPassword()))
                 .nickname(dto.getNickname())
                 .build()).getId();
+
+        return id;
+    }
+
+    @Async
+    public void sendMail(AddUserRequest dto) {
         try {
             javaMailService.sendMail(dto);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
 
-        return id;
+    public String sendValidNumber(AddUserRequest dto) throws Exception {
+        Random random = new Random();
+        String validNumber = "";
+        for (int i = 0; i < 6; i++) {
+            validNumber += Integer.toString(random.nextInt(10));
+        }
+        javaMailService.sendValidNumber(dto,validNumber);
+        return validNumber;
     }
 
     public User findById(Long userId) {

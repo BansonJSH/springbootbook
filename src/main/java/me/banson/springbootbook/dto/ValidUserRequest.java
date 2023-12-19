@@ -2,14 +2,18 @@ package me.banson.springbootbook.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import me.banson.springbootbook.domain.Article;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-public class AddUserRequest {
+public class ValidUserRequest {
+
     @Email
     @NotEmpty
     private String email;
@@ -17,11 +21,8 @@ public class AddUserRequest {
     private String password;
     @NotEmpty
     private String nickname;
-
-    @Builder
-    public AddUserRequest (String email, String password, String nickname) {
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
-    }
+    @NotEmpty
+    private String validNumber;
+    @NotEmpty
+    private String UserValidNumber;
 }
