@@ -40,21 +40,19 @@ public class BlogViewController {
 
     //전체 게시물 조회
     @GetMapping("/articles")
-    public String getArticles(Model model, Principal principal,@PageableDefault(sort = "id", size = 3, page = 1) Pageable pageable,
+    public String getArticles(Model model, Principal principal, @PageableDefault(sort = "id", size = 3, page = 1) Pageable pageable,
                               @RequestParam(required = false, defaultValue = "") String search) {
         Page<Article> articles = blogService.findByTitleContaining(pageable, search);
         model.addAttribute("articles", articles);
         int nowPage = articles.getPageable().getPageNumber();
         int firstPage = 0;
-        int lastPage = articles.getTotalPages()-1;
+        int lastPage = articles.getTotalPages() - 1;
 
         if (nowPage - 4 >= 0) {
             firstPage = nowPage - 4;
-        }
-        else if (nowPage + 4 <= articles.getTotalPages()-1) {
+        } else if (nowPage + 4 <= articles.getTotalPages() - 1) {
             lastPage = nowPage + 4;
         }
-
         model.addAttribute("nowPage", nowPage);
         model.addAttribute("firstPage", firstPage);
         model.addAttribute("lastPage", lastPage);
@@ -101,7 +99,17 @@ public class BlogViewController {
 
 
     @GetMapping("/new-article")
-    public String newArticle(@RequestParam(required = false) Long id, Model model) {
+    public String newArticle(@RequestParam(required = false) Long id, Model model, Principal principal) {
+        String name;
+        if (isAuthenticated()) {
+            if (principal.getName().contains("@")) {
+                name = userService.findByEmail(principal.getName()).getNickname();
+            } else {
+                name = userService.findByGoogleId(principal.getName()).getNickname();
+            }
+            System.out.println(name);
+            model.addAttribute("name", name);
+        }
         if (id == null) {
             model.addAttribute("article", new ArticleViewResponse());
         } else {
@@ -110,5 +118,24 @@ public class BlogViewController {
         }
 
         return "newArticle";
+    }
+
+    @GetMapping("/myArticles")
+    public String myArticles(Model model, Principal principal, @PageableDefault(sort = "id", size = 3, page = 1) Pageable pageable) {
+        String name = null;
+        if (isAuthenticated()) {
+            if (principal.getName().contains("@")) {
+                name = userService.findByEmail(principal.getName()).getNickname();
+            } else {
+                name = userService.findByGoogleId(principal.getName()).getNickname();
+            }
+            System.out.println(name);
+            model.addAttribute("name", name);
+        } else {
+            model.addAttribute("name", "null");
+        }
+        blogService.findMyTitle(name);
+        model.addAttribute("articles", blogService.findMyTitle(name));
+        return "myArticles";
     }
 }

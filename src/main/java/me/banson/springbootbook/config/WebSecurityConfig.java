@@ -1,8 +1,6 @@
 package me.banson.springbootbook.config;
 
 import lombok.RequiredArgsConstructor;
-import me.banson.springbootbook.config.jwt.JwtProperties;
-import me.banson.springbootbook.config.jwt.TokenProvider;
 import me.banson.springbootbook.config.oauth2.OAuth2UserCustomService;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -15,24 +13,20 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
 @RequiredArgsConstructor
 @Configuration
 public class WebSecurityConfig {
 
     private final UserDetailsService userDetailsService;
-    private final TokenProvider tokenProvider;
     private final OAuth2UserCustomService oAuth2UserCustomService;
 
     @Bean
     public WebSecurityCustomizer configure() {
         return (web) -> web.ignoring()
                 .requestMatchers(new AntPathRequestMatcher("/static/**"))
-                .requestMatchers(new AntPathRequestMatcher("/error"))
+                .requestMatchers(new AntPathRequestMatcher("/error/**"))
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
@@ -44,7 +38,9 @@ public class WebSecurityConfig {
                         new AntPathRequestMatcher("/login"),
                         new AntPathRequestMatcher("/signup"),
                         new AntPathRequestMatcher("/user"),
-                        new AntPathRequestMatcher("/articles")
+                        new AntPathRequestMatcher("/articles"),
+                        new AntPathRequestMatcher("/validUser"),
+                        new AntPathRequestMatcher("/swagger-ui/**")
                 ).permitAll()
                 .anyRequest().authenticated()
                 )

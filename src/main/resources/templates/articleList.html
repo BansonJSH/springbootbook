@@ -1,16 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>블로그 글 목록</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-</head>
-<body>
-<div class="p-5 mb-5 text-center</> bg-light">
-    <h1 class="mb-3"><a th:href="@{/articles}">banson's Blog</a></h1>
-    <h4 class="mb-3">환영합니다.</h4>
-</div>
+<div th:insert="~{/common-head :: headerFragment}"></div>
+<div th:insert="~{/common-head :: bodyFragment (${name})}"></div>
 
+<body>
 <!--글등록과 상세보기-->
 <div class="container">
     <button type="button" id="create-btn" th:onclick="|location.href='@{new-article}'|"
@@ -41,7 +34,7 @@
         <ul class="pagination justify-content-center">
 
             <li class="page-item">
-                <a class="page-link" th:href="@{/articles(page=1,search=${search})}">첫 페이지 </a>
+                <a class="page-link" th:if="${nowPage != firstPage}" th:href="@{/articles(page=1,search=${search})}">첫 페이지 </a>
             </li>
 
             <li class="page-item" th:if="${nowPage != firstPage}">
@@ -50,7 +43,7 @@
 
             <li class="page-item" th:each="page:${#numbers.sequence(firstPage+1,lastPage+1)}">
                     <a class="page-link" th:if="${page != nowPage+1}" th:href="@{/articles(page=${page},search=${search})}" th:text ="${page}"></a>
-                    <span class="page-link" th:if="${page==nowPage+1}" th:text ="${page}" ></span>
+                    <span class="page-link" th:if="${page==nowPage+1}" th:text ="${page}" style="color:black"></span>
             </li>
 
             <li class="page-item" th:if="${nowPage != lastPage}">
@@ -58,19 +51,10 @@
             </li>
 
             <li class="page-item">
-                <a class="page-link" th:href="@{/articles(page=${articles.totalPages},search=${search})}"> 마지막 페이지</a>
+                <a class="page-link" th:if="${nowPage != lastPage}" th:href="@{/articles(page=${articles.totalPages},search=${search})}"> 마지막 페이지</a>
             </li>
         </ul>
     </div>
-
-<!--로그인, 회원가입, 로그아웃-->
-    <a th:if="${name == 'null'}" type="button" class="btn btn-secondary" th:href="@{/login}">로그인</a>
-    <button th:if="${name == 'null'}" type="button" class="btn btn-secondary" onclick="location.href='/signup'">회원가입
-    </button>
-    <p th:unless="${name == 'null'}" th:text="|환영합니다 ${name}님|"></p>
-    <button th:unless="${name == 'null'}" type="button" class="btn btn-secondary" onclick="location.href='/logout'">
-        로그아웃
-    </button>
 </div>
 
 <script src="/js/article.js"></script>
