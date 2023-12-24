@@ -26,7 +26,6 @@ public class WebSecurityConfig {
     public WebSecurityCustomizer configure() {
         return (web) -> web.ignoring()
                 .requestMatchers(new AntPathRequestMatcher("/static/**"))
-                .requestMatchers(new AntPathRequestMatcher("/error"))
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 

@@ -1,5 +1,6 @@
 package me.banson.springbootbook.domain;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-
+@Schema(description = "게시물 DAO")
 public class Article {
 
     @Id
@@ -25,11 +26,11 @@ public class Article {
     private Long id;
 
     @Column(name = "title", nullable = false)
-    @NotEmpty
+    @NotEmpty(message = "비어있을 수 없음")
     private String title;
 
     @Column(name = "content", nullable = false)
-    @NotEmpty
+    @NotEmpty(message = "비어있을 수 없음")
     private String content;
 
     @CreatedDate
@@ -41,7 +42,7 @@ public class Article {
     private LocalDateTime updatedAt;
 
     @Column(name = "author", nullable = false)
-    @NotEmpty
+    @NotEmpty(message = "비어있을 수 없음")
     private String author;
 
     @Builder

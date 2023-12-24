@@ -1,8 +1,9 @@
 package me.banson.springbootbook.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import me.banson.springbootbook.domain.Article;
-import me.banson.springbootbook.domain.User;
 import me.banson.springbootbook.dto.AddArticleRequest;
 import me.banson.springbootbook.dto.ArticleResponse;
 import me.banson.springbootbook.dto.UpdateArticleRequest;
@@ -17,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +29,7 @@ public class BlogController {
 
     //게시물 만들기
     @PostMapping("api/articles")
+    @Operation(description = "게시물 작성")
     public ResponseEntity<Article> addArticle(@RequestBody AddArticleRequest request, Principal principal) {
         String name;
         if (principal.getName().contains("@")) {
@@ -44,6 +45,7 @@ public class BlogController {
 
     //게시물 전체 조회
     @GetMapping("api/articles")
+    @Operation(description = "게시물 전체 조회")
     public ResponseEntity<Page<ArticleResponse>> findAllArticle(@PageableDefault(sort = "id", size = 5)Pageable pageable, String search) {
         Page<ArticleResponse> articles = (Page<ArticleResponse>) blogService.findByTitleContaining(pageable, search)
                 .stream()
@@ -56,7 +58,8 @@ public class BlogController {
 
     //게시물 하나 조회
     @GetMapping("api/articles/{id}")
-    public ResponseEntity<ArticleResponse> findArticle(@PathVariable long id) {
+    @Operation(description = "게시물 하나 조회")
+    public ResponseEntity<ArticleResponse> findArticle(@PathVariable @Parameter(name = "id", description = "게시물 id") long id) {
         Article article = blogService.findById(id);
 
         return ResponseEntity.ok()
@@ -65,6 +68,7 @@ public class BlogController {
 
     //게시물 삭제
     @DeleteMapping("api/articles/{id}")
+    @Operation(description = "게시물 삭제")
     public ResponseEntity<Void> deleteArticle(@PathVariable long id) {
         blogService.delete(id);
         commentService.deleteByArticleId(id);
@@ -74,6 +78,7 @@ public class BlogController {
 
     //게시물 수정
     @PutMapping("api/articles/{id}")
+    @Operation(description = "게시물 수정")
     public ResponseEntity<Article> updateArticle(@PathVariable long id, @RequestBody UpdateArticleRequest request) {
         Article updateArticle = blogService.update(id, request);
 

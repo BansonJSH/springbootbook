@@ -53,7 +53,6 @@ public class BlogViewController {
         } else if (nowPage + 4 <= articles.getTotalPages() - 1) {
             lastPage = nowPage + 4;
         }
-
         model.addAttribute("nowPage", nowPage);
         model.addAttribute("firstPage", firstPage);
         model.addAttribute("lastPage", lastPage);

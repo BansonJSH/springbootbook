@@ -3,7 +3,6 @@ package me.banson.springbootbook.repository;
 import me.banson.springbootbook.domain.Comment;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 

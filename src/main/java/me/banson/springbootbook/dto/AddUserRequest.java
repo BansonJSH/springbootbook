@@ -5,17 +5,18 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import me.banson.springbootbook.domain.Article;
 
 @Getter
 @Setter
 public class AddUserRequest {
     @Email
-    @NotEmpty
+    @NotEmpty(message = "비어있을 수 없음")
     private String email;
     @NotEmpty
+    @NotEmpty(message = "비어있을 수 없음")
     private String password;
     @NotEmpty
+    @NotEmpty(message = "비어있을 수 없음")
     private String nickname;
 
     @Builder
