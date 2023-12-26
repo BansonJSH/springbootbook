@@ -28,7 +28,7 @@ public class BlogService {
 
     public Page<Article> findByTitleContaining(Pageable pageable, String search) {
         int pageNo = pageable.getPageNumber()-1;
-        return blogRepository.findByTitleContaining(PageRequest.of(pageNo, 3), search);
+        return blogRepository.findByTitleContainingDesc(PageRequest.of(pageNo, 3), search);
     }
 
     public Article findById(long id) {

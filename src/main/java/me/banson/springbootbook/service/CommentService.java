@@ -14,7 +14,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     public List<Comment> findByArticleId(String articleId) {
-        return commentRepository.findByArticleId(articleId);
+        return commentRepository.findByArticleIdDesc(articleId);
     }
 
     @Transactional
@@ -22,7 +22,11 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public void deleteByArticleId(Long articleId) {
+    public void deleteByArticleId(String articleId) {
         commentRepository.deleteByArticleId(articleId);
+    }
+
+    public void deleteById(String id) {
+        commentRepository.deleteById(id);
     }
 }

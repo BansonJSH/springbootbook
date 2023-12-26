@@ -34,7 +34,7 @@
         <ul class="pagination justify-content-center">
 
             <li class="page-item">
-                <a class="page-link" th:href="@{/articles(page=1,search=${search})}">첫 페이지 </a>
+                <a class="page-link" th:if="${nowPage != firstPage}" th:href="@{/articles(page=1,search=${search})}">첫 페이지 </a>
             </li>
 
             <li class="page-item" th:if="${nowPage != firstPage}">
@@ -43,7 +43,7 @@
 
             <li class="page-item" th:each="page:${#numbers.sequence(firstPage+1,lastPage+1)}">
                     <a class="page-link" th:if="${page != nowPage+1}" th:href="@{/articles(page=${page},search=${search})}" th:text ="${page}"></a>
-                    <span class="page-link" th:if="${page==nowPage+1}" th:text ="${page}" ></span>
+                    <span class="page-link" th:if="${page==nowPage+1}" th:text ="${page}" style="color:black"></span>
             </li>
 
             <li class="page-item" th:if="${nowPage != lastPage}">
@@ -51,7 +51,7 @@
             </li>
 
             <li class="page-item">
-                <a class="page-link" th:href="@{/articles(page=${articles.totalPages},search=${search})}"> 마지막 페이지</a>
+                <a class="page-link" th:if="${nowPage != lastPage}" th:href="@{/articles(page=${articles.totalPages},search=${search})}"> 마지막 페이지</a>
             </li>
         </ul>
     </div>

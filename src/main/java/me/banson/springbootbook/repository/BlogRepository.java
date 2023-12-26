@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BlogRepository extends JpaRepository<Article, Long>, BlogRepositoryCustom {
 
-    Page<Article> findByTitleContaining(Pageable pageable, String search);
+    Page<Article> findByTitleContainingDesc(Pageable pageable, String search);
 }

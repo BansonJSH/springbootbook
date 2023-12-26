@@ -71,7 +71,7 @@ public class BlogController {
     @Operation(description = "게시물 삭제")
     public ResponseEntity<Void> deleteArticle(@PathVariable long id) {
         blogService.delete(id);
-        commentService.deleteByArticleId(id);
+        commentService.deleteByArticleId(String.valueOf(id));
 
         return ResponseEntity.ok().build();
     }

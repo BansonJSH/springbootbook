@@ -48,8 +48,12 @@
   <div class="row">
     <div class="col-lg-8">
       <div th:each="comments:${comments}">
-        <p class="text-muted fst-italic mb-1" style="float:right" th:text="|nickname: ${comments.nickname}|"></p>
-        <p class="fs-5 mb-1" th:text="${comments.comment}"></p>
+        <form th:action="@{/articles/delete-comment}" method="POST">
+          <p class="text-muted fst-italic mb-1" th:text="|nickname: ${comments.nickname}|"></p>
+          <button th:if="${name == comments.nickname}" type="submit" class="btn btn-danger" style="float:right">삭제</button>
+          <p class="fs-5 mb-1" th:text="${comments.comment}"></p>
+          <input type="hidden" name="id" th:value="${comments.id}">
+        </form>
         <hr>
       </div>
     </div>
