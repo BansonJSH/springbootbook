@@ -20,7 +20,6 @@ import java.util.List;
 
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
 public class User implements UserDetails {
@@ -52,6 +51,9 @@ public class User implements UserDetails {
 
     @Column(name = "googleId")
     private String googleId;
+
+    public User() {
+    }
 
     @Builder
     public User (String email, String password, String nickname, String googleId) {

@@ -10,9 +10,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @RequiredArgsConstructor
@@ -22,34 +23,39 @@ public class UserApiController {
     private final UserService userService;
 
     @PostMapping("/user")   //회원가입 완료 후 가입메일 발송
-    public String signup(ValidUserRequest request, Model model) {
-        if (request.getValidNumber().equals(request.getUserValidNumber())) {
-            AddUserRequest request1 = AddUserRequest.builder()
-                    .email(request.getEmail())
-                    .password(request.getPassword())
-                    .nickname(request.getNickname())
-                    .build();
-            userService.save(request1);
-            userService.sendMail(request1);
-        } else {
+    public String signup(@Validated @ModelAttribute("user") ValidUserRequest request, Model model) {
+        //실패
+        if (!request.getValidNumber().equals(request.getUserValidNumber())) {
             model.addAttribute("user", request);
             model.addAttribute("validNumber", request.getValidNumber());
             return "validUser";
         }
+
+        //성공
+        AddUserRequest request1 = AddUserRequest.builder()
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .nickname(request.getNickname())
+                .build();
+        userService.save(request1);
+        userService.sendMail(request1);
         return "redirect:/login";
     }
 
     @PostMapping("/validUser")  //회원가입 요청 시 인증번호 발송
-    public String validUser(@Validated AddUserRequest request, Errors errors, Model model) throws Exception {
-        if (errors.hasErrors()) {
-            model.addAttribute("fail" ,"잘못된 회원가입입니다.");
-            return "redirect:/signup";
-        } else {
-            String validNumber = userService.sendValidNumber(request);
-            model.addAttribute("user" ,request);
-            model.addAttribute("validNumber", validNumber);
-            System.out.println(validNumber);
+    public String validUser(@Validated @ModelAttribute("user") AddUserRequest request, BindingResult bindingResult,
+                            Model model) throws Exception {
+        //실패
+        if (bindingResult.hasErrors()) {
+            bindingResult.reject("signUpError", null);
+            return "signup";
         }
+
+        //성공
+        String validNumber = userService.sendValidNumber(request);
+        model.addAttribute("user" ,request);
+        model.addAttribute("validNumber", validNumber);
+        System.out.println(validNumber);
         return "validUser";
     }
 

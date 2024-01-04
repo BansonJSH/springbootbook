@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -38,9 +39,25 @@ public class BlogViewController {
         return authentication.isAuthenticated();
     }
 
+    @ModelAttribute("name")
+    private String userName(Principal principal) {
+        String name;
+        if (isAuthenticated()) {
+            if (principal.getName().contains("@")) {
+                name = userService.findByEmail(principal.getName()).getNickname();
+            } else {
+                name = userService.findByGoogleId(principal.getName()).getNickname();
+            }
+            System.out.println(name);
+            return name;
+        } else {
+            return null;
+        }
+    }
+
     //전체 게시물 조회
     @GetMapping("/articles")
-    public String getArticles(Model model, Principal principal, @PageableDefault(sort = "id", size = 3, page = 1) Pageable pageable,
+    public String getArticles(Model model, @PageableDefault(sort = "id", size = 3, page = 1) Pageable pageable,
                               @RequestParam(required = false, defaultValue = "") String search) {
         Page<Article> articles = blogService.findByTitleContaining(pageable, search);
         model.addAttribute("articles", articles);
@@ -53,67 +70,36 @@ public class BlogViewController {
         } else if (nowPage + 4 <= articles.getTotalPages() - 1) {
             lastPage = nowPage + 4;
         }
+
         model.addAttribute("nowPage", nowPage);
         model.addAttribute("firstPage", firstPage);
         model.addAttribute("lastPage", lastPage);
         model.addAttribute("search", search);
 
-        String name;
-        if (isAuthenticated()) {
-            if (principal.getName().contains("@")) {
-                name = userService.findByEmail(principal.getName()).getNickname();
-            } else {
-                name = userService.findByGoogleId(principal.getName()).getNickname();
-            }
-            System.out.println(name);
-            model.addAttribute("name", name);
-        } else {
-            model.addAttribute("name", "null");
-        }
         return "articleList";
     }
 
     //게시물 하나 조회
     @GetMapping("/articles/{id}")
-    public String getArticle(@PathVariable Long id, Model model, Principal principal) {
+    public String getArticle(@PathVariable Long id, Model model) {
         Article article = blogService.findById(id);
         model.addAttribute("article", article);
         List<Comment> comments = commentService.findByArticleId(String.valueOf(id));
         model.addAttribute("comments", comments);
-
-        String name;
-        if (isAuthenticated()) {
-            if (principal.getName().contains("@")) {
-                name = userService.findByEmail(principal.getName()).getNickname();
-            } else {
-                name = userService.findByGoogleId(principal.getName()).getNickname();
-            }
-            System.out.println(name);
-            model.addAttribute("name", name);
-        } else {
-            model.addAttribute("name", "null");
-        }
 
         return "article";
     }
 
 
     @GetMapping("/new-article")
-    public String newArticle(@RequestParam(required = false) Long id, Model model, Principal principal) {
-        String name;
-        if (isAuthenticated()) {
-            if (principal.getName().contains("@")) {
-                name = userService.findByEmail(principal.getName()).getNickname();
-            } else {
-                name = userService.findByGoogleId(principal.getName()).getNickname();
-            }
-            System.out.println(name);
-            model.addAttribute("name", name);
-        }
+    public String newArticle(@RequestParam(required = false) Long id, Model model,Principal principal) {
         if (id == null) {
             model.addAttribute("article", new ArticleViewResponse());
         } else {
             Article article = blogService.findById(id);
+            if(!article.getAuthor().equals(this.userName(principal))){
+                return "redirect:/articles";
+            }
             model.addAttribute("article", new ArticleViewResponse(article));
         }
 
@@ -122,18 +108,7 @@ public class BlogViewController {
 
     @GetMapping("/myArticles")
     public String myArticles(Model model, Principal principal, @PageableDefault(sort = "id", size = 3, page = 1) Pageable pageable) {
-        String name = null;
-        if (isAuthenticated()) {
-            if (principal.getName().contains("@")) {
-                name = userService.findByEmail(principal.getName()).getNickname();
-            } else {
-                name = userService.findByGoogleId(principal.getName()).getNickname();
-            }
-            System.out.println(name);
-            model.addAttribute("name", name);
-        } else {
-            model.addAttribute("name", "null");
-        }
+        String name = this.userName(principal);
         blogService.findMyTitle(name);
         model.addAttribute("articles", blogService.findMyTitle(name));
         return "myArticles";

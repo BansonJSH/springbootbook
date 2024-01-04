@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends MongoRepository<Comment, String> {
-    List<Comment> findByArticleIdDesc(String articleId);
+    List<Comment> findByArticleId(String articleId);
 
     void deleteByArticleId(String articleId);
 

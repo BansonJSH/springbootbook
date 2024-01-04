@@ -10,6 +10,9 @@ Spring:
       password: root
       database: comment
 
+  messages:
+    basename: errors
+
 spring-doc:
   swagger-ui:
     # swagger-ui 접근 경로. default 값은 /swagger-ui.html이다.

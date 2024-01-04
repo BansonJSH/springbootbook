@@ -9,6 +9,7 @@ import me.banson.springbootbook.repository.QRepository.BlogRepositoryImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,7 @@ public class BlogService {
 
     public Page<Article> findByTitleContaining(Pageable pageable, String search) {
         int pageNo = pageable.getPageNumber()-1;
-        return blogRepository.findByTitleContainingDesc(PageRequest.of(pageNo, 3), search);
+        return blogRepository.findByTitleContaining(PageRequest.of(pageNo, 3, Sort.by("createdAt").descending()), search);
     }
 
     public Article findById(long id) {

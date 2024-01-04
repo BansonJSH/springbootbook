@@ -14,7 +14,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     public List<Comment> findByArticleId(String articleId) {
-        return commentRepository.findByArticleIdDesc(articleId);
+        return commentRepository.findByArticleId(articleId);
     }
 
     @Transactional
