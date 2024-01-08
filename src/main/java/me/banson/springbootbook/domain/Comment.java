@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @Document(collection = "comment")
 @Getter
-@NoArgsConstructor
 public class Comment {
     @Id
     private String id;
@@ -25,8 +24,6 @@ public class Comment {
     private String  articleId;
     @CreatedDate
     private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 
     @Builder
     public Comment(String articleId, String comment, String nickname) {

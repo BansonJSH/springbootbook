@@ -3,6 +3,7 @@ package me.banson.springbootbook.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import me.banson.springbootbook.domain.User;
 import me.banson.springbootbook.dto.AddUserRequest;
 import me.banson.springbootbook.dto.ValidUserRequest;
 import me.banson.springbootbook.service.UserService;
@@ -23,27 +24,27 @@ public class UserApiController {
     private final UserService userService;
 
     @PostMapping("/user")   //회원가입 완료 후 가입메일 발송
-    public String signup(@Validated @ModelAttribute("user") ValidUserRequest request, Model model) {
+    public String signup(@Validated @ModelAttribute("user") ValidUserRequest request, BindingResult bindingResult, Model model) {
         //실패
-        if (!request.getValidNumber().equals(request.getUserValidNumber())) {
+        if (!request.getValidNumber().equals(request.getUserValidNumber()) || bindingResult.hasErrors()) {
             model.addAttribute("user", request);
-            model.addAttribute("validNumber", request.getValidNumber());
+            bindingResult.reject("validNumberError", null);
             return "validUser";
         }
 
         //성공
-        AddUserRequest request1 = AddUserRequest.builder()
+        AddUserRequest addUserRequest = AddUserRequest.builder()
                 .email(request.getEmail())
                 .password(request.getPassword())
                 .nickname(request.getNickname())
                 .build();
-        userService.save(request1);
-        userService.sendMail(request1);
+        userService.save(addUserRequest);
+        userService.sendMail(addUserRequest);
         return "redirect:/login";
     }
 
     @PostMapping("/validUser")  //회원가입 요청 시 인증번호 발송
-    public String validUser(@Validated @ModelAttribute("user") AddUserRequest request, BindingResult bindingResult,
+    public String validUser(@Validated @ModelAttribute("user") AddUserRequest user, BindingResult bindingResult,
                             Model model) throws Exception {
         //실패
         if (bindingResult.hasErrors()) {
@@ -51,10 +52,15 @@ public class UserApiController {
             return "signup";
         }
 
+        String validNumber = userService.sendValidNumber(user);
+        ValidUserRequest request = ValidUserRequest.builder()
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .nickname(user.getNickname())
+                .validNumber(validNumber).build();
+
         //성공
-        String validNumber = userService.sendValidNumber(request);
         model.addAttribute("user" ,request);
-        model.addAttribute("validNumber", validNumber);
         System.out.println(validNumber);
         return "validUser";
     }

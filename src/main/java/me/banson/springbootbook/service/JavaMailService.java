@@ -1,6 +1,7 @@
 package me.banson.springbootbook.service;
 
 import lombok.RequiredArgsConstructor;
+import me.banson.springbootbook.domain.User;
 import me.banson.springbootbook.dto.AddUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -27,10 +28,10 @@ public class JavaMailService {
     }
 
     @Async
-    public void sendValidNumber(AddUserRequest dto, String validNumber) throws Exception {
+    public void sendValidNumber(AddUserRequest user, String validNumber) throws Exception {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
-        simpleMailMessage.setTo(dto.getEmail());
+        simpleMailMessage.setTo(user.getEmail());
         simpleMailMessage.setSubject("인증번호");
         simpleMailMessage.setText("인증번호는 " + validNumber+ " 입니다.");
         javaMailSender.send(simpleMailMessage);

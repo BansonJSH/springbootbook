@@ -6,14 +6,14 @@
 <body>
 <!--글등록과 상세보기-->
 <div class="container">
-    <button type="button" id="create-btn" th:onclick="|location.href='@{new-article}'|"
-            class="btn btn-secondary btn-sm mb-3">글 등록
-    </button>
+    <a th:href="@{/new-article}" class="btn btn-secondary btn-sm mb-3" th:text="#{register}">글 등록</a>
+
     <form th:action="@{/articles(page=1)}" method="get">
-        <label>검색: </label>
+        <label th:text="#{search}">검색: </label>
         <input type="text" name="search">
-        <button class="btn btn-outline-dark" type="submit">제목 검색</button>
+        <button class="btn btn-outline-dark" type="submit" th:text="#{searchtitle}">제목 검색</button>
     </form>
+
     <br>
     <div class="row-6" th:each="item, i: ${articles}">
         <div class="card">
@@ -23,7 +23,7 @@
                 <h5 class="card-title" th:text="${item.title}"></h5>
                 <p class="card-text" th:text="${item.content}"></p>
                 <a th:href="@{/articles/{id}(id=${item.id})}"
-                   class="btn btn-primary">보러가기</a>
+                   class="btn btn-primary" th:text="#{see}">보러가기</a>
             </div>
         </div>
         <br>
@@ -34,11 +34,12 @@
         <ul class="pagination justify-content-center">
 
             <li class="page-item">
-                <a class="page-link" th:if="${nowPage != firstPage}" th:href="@{/articles(page=1,search=${search})}">첫 페이지 </a>
+                <a class="page-link" th:if="${nowPage != firstPage}" th:href="@{/articles(page=1,search=${search})}"
+                   th:text="#{firstpage}">첫 페이지 </a>
             </li>
 
             <li class="page-item" th:if="${nowPage != firstPage}">
-                <a class="page-link" th:href="@{/articles(page=${nowPage},search=${search})}"> 이전 </a>
+                <a class="page-link" th:href="@{/articles(page=${nowPage},search=${search})}" th:text="#{prepage}"> 이전 </a>
             </li>
 
             <li class="page-item" th:each="page:${#numbers.sequence(firstPage+1,lastPage+1)}">
@@ -47,11 +48,13 @@
             </li>
 
             <li class="page-item" th:if="${nowPage != lastPage}">
-                <a class="page-link" th:href="@{/articles(page=${nowPage+2},search=${search})}"> 다음 </a>
+                <a class="page-link" th:href="@{/articles(page=${nowPage+2},search=${search})}"
+                   th:text="#{nextpage}"> 다음 </a>
             </li>
 
             <li class="page-item">
-                <a class="page-link" th:if="${nowPage != lastPage}" th:href="@{/articles(page=${articles.totalPages},search=${search})}"> 마지막 페이지</a>
+                <a class="page-link" th:if="${nowPage != lastPage}" th:text="#{lastpage}"
+                   th:href="@{/articles(page=${articles.totalPages},search=${search})}"> 마지막 페이지</a>
             </li>
         </ul>
     </div>

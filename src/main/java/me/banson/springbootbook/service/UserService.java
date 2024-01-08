@@ -40,13 +40,13 @@ public class UserService {
         }
     }
 
-    public String sendValidNumber(AddUserRequest dto) throws Exception {
+    public String sendValidNumber(AddUserRequest user) throws Exception {
         Random random = new Random();
         String validNumber = "";
         for (int i = 0; i < 6; i++) {
             validNumber += Integer.toString(random.nextInt(10));
         }
-        javaMailService.sendValidNumber(dto,validNumber);
+        javaMailService.sendValidNumber(user, validNumber);
         return validNumber;
     }
 

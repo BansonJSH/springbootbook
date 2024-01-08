@@ -11,7 +11,7 @@ Spring:
       database: comment
 
   messages:
-    basename: errors
+    basename: errors,messages
 
 spring-doc:
   swagger-ui:

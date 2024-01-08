@@ -1,3 +1,4 @@
+/*
 const deleteButton = document.getElementById('delete-btn');
 
 if (deleteButton) {
@@ -57,4 +58,4 @@ if (createButton) {
                 location.replace('/articles');
             });
     });
-}
+}*/

@@ -3,7 +3,7 @@ package me.banson.springbootbook.controller;
 import lombok.RequiredArgsConstructor;
 import me.banson.springbootbook.domain.Article;
 import me.banson.springbootbook.domain.Comment;
-import me.banson.springbootbook.dto.ArticleViewResponse;
+import me.banson.springbootbook.dto.ArticleDto;
 import me.banson.springbootbook.service.BlogService;
 import me.banson.springbootbook.service.CommentService;
 import me.banson.springbootbook.service.UserService;
@@ -15,10 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
@@ -94,16 +91,39 @@ public class BlogViewController {
     @GetMapping("/new-article")
     public String newArticle(@RequestParam(required = false) Long id, Model model,Principal principal) {
         if (id == null) {
-            model.addAttribute("article", new ArticleViewResponse());
+            model.addAttribute("article", new ArticleDto());
         } else {
             Article article = blogService.findById(id);
             if(!article.getAuthor().equals(this.userName(principal))){
                 return "redirect:/articles";
             }
-            model.addAttribute("article", new ArticleViewResponse(article));
+            model.addAttribute("article", new ArticleDto(article));
         }
 
         return "newArticle";
+    }
+
+    @PostMapping("/new-article")
+    public String newArticle(@ModelAttribute("article") ArticleDto articleDto, Model model, Principal principal) {
+        Article article;
+
+        if (articleDto.getId() != null) {
+            article = blogService.update(articleDto.getId(), articleDto);
+        }
+        else {
+            article = blogService.save(articleDto, this.userName(principal));
+        }
+
+        model.addAttribute("article", article);
+
+        return "redirect:/articles/" + article.getId();
+    }
+
+    @GetMapping("delete-article")
+    public String deleteArticle(@RequestParam Long id) {
+        blogService.delete(id);
+        commentService.deleteByArticleId(String.valueOf(id));
+        return "redirect:/articles";
     }
 
     @GetMapping("/myArticles")

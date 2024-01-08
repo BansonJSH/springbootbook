@@ -1,3 +1,4 @@
+/*
 package me.banson.springbootbook.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -86,3 +87,4 @@ public class BlogController {
                 .body(updateArticle);
     }
 }
+*/

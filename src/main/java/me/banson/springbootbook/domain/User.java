@@ -3,10 +3,7 @@ package me.banson.springbootbook.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -33,7 +30,7 @@ public class User implements UserDetails {
     @Email
     private String email;
 
-    @NotEmpty
+    @NotEmpty(message = "엉엉")
     @Column(name = "password")
     private String password;
 

@@ -2,8 +2,7 @@ package me.banson.springbootbook.service;
 
 import lombok.RequiredArgsConstructor;
 import me.banson.springbootbook.domain.Article;
-import me.banson.springbootbook.dto.AddArticleRequest;
-import me.banson.springbootbook.dto.UpdateArticleRequest;
+import me.banson.springbootbook.dto.ArticleDto;
 import me.banson.springbootbook.repository.BlogRepository;
 import me.banson.springbootbook.repository.QRepository.BlogRepositoryImpl;
 import org.springframework.data.domain.Page;
@@ -23,8 +22,13 @@ public class BlogService {
     private final BlogRepositoryImpl qBlogRepository;
 
     @Transactional
-    public Article save(AddArticleRequest request, String userName) {
-        return blogRepository.save(request.toEntity(userName));
+    public Article save(ArticleDto request, String userName) {
+        Article article = Article.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .author(userName)
+                .build();
+        return blogRepository.save(article);
     }
 
     public Page<Article> findByTitleContaining(Pageable pageable, String search) {
@@ -42,7 +46,7 @@ public class BlogService {
     }
 
     @Transactional
-    public Article update(long id, UpdateArticleRequest request) {
+    public Article update(long id, ArticleDto request) {
         Article article = blogRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
 

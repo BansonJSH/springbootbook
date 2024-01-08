@@ -2,10 +2,7 @@ package me.banson.springbootbook.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,6 +19,13 @@ public class ValidUserRequest {
     private String nickname;
     @NotEmpty
     private String validNumber;
-    @NotEmpty
-    private String UserValidNumber;
+    private String userValidNumber;
+
+    @Builder
+    ValidUserRequest(String email, String password, String nickname, String validNumber) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.validNumber = validNumber;
+    }
 }

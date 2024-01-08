@@ -1,10 +1,12 @@
 package me.banson.springbootbook.dto;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
-@Data
+@Getter
+@Setter
 public class AddUserRequest {
     @Email
     @NotEmpty(message = "비어있을 수 없음")
