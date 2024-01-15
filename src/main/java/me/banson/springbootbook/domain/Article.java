@@ -45,11 +45,24 @@ public class Article {
     @NotEmpty(message = "비어있을 수 없음")
     private String author;
 
+    private String originalFileName;
+
+    private String storeFileName;
+
     @Builder
-    public Article(String title, String content, String author) {
+    public Article(String title, String content, String author, String originalFileName, String storeFileName) {
         this.title = title;
         this.content = content;
         this.author = author;
+        this.originalFileName = originalFileName;
+        this.storeFileName = storeFileName;
+    }
+
+    public void update(String title, String content, String originalFileName, String storeFileName) {
+        this.title = title;
+        this.content = content;
+        this.originalFileName = originalFileName;
+        this.storeFileName = storeFileName;
     }
 
     public void update(String title, String content) {

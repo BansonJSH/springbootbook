@@ -3,6 +3,10 @@ package me.banson.springbootbook.service;
 import lombok.RequiredArgsConstructor;
 import me.banson.springbootbook.domain.Comment;
 import me.banson.springbootbook.repository.CommentRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,8 +17,9 @@ import java.util.List;
 public class CommentService {
     private final CommentRepository commentRepository;
 
-    public List<Comment> findByArticleId(String articleId) {
-        return commentRepository.findByArticleId(articleId);
+    public Page<Comment> findByArticleId(Pageable pageable, String articleId) {
+        int pageNo = pageable.getPageNumber()-1;
+        return commentRepository.findByArticleId(PageRequest.of(pageNo, 3, Sort.by("id").descending()), articleId);
     }
 
     @Transactional

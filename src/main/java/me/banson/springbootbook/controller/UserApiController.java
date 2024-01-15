@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RequiredArgsConstructor
 @Controller
@@ -43,7 +44,7 @@ public class UserApiController {
         return "redirect:/login";
     }
 
-    @PostMapping("/validUser")  //회원가입 요청 시 인증번호 발송
+    @PostMapping("/signup")  //회원가입 요청 시 인증번호 발송
     public String validUser(@Validated @ModelAttribute("user") AddUserRequest user, BindingResult bindingResult,
                             Model model) throws Exception {
         //실패

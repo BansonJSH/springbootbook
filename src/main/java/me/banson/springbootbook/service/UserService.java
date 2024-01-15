@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.Random;
 
 @RequiredArgsConstructor
@@ -17,6 +18,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final JavaMailService javaMailService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
     public Long save(AddUserRequest dto) {
@@ -63,6 +65,24 @@ public class UserService {
     public User findByGoogleId(String googleId) {
         return userRepository.findByGoogleId(googleId)
                 .orElseThrow();
+    }
+
+    @Transactional
+    public User changePassword(AddUserRequest addUserRequest) {
+        User user = userRepository.findByEmail(addUserRequest.getEmail())
+                .orElseThrow();
+        user.changePassword(passwordEncoder.encode(addUserRequest.getPassword()));
+        return user;
+    }
+
+    public User findNickname(Principal principal) {
+        User user;
+        if (principal.getName().contains("@")) {
+            user = this.findByEmail(principal.getName());
+        } else {
+            user = this.findByGoogleId(principal.getName());
+        }
+        return user;
     }
 }
 

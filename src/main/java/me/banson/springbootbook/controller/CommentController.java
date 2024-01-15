@@ -21,14 +21,7 @@ public class CommentController {
 
     @PostMapping("/articles/new-comment")
     public String createComment(@RequestParam String articleId, @RequestParam String comment, Principal principal) {
-        System.out.println(comment);
-        System.out.println(articleId);
-        String name;
-        if (principal.getName().contains("@")) {
-            name = userService.findByEmail(principal.getName()).getNickname();
-        } else {
-            name = userService.findByGoogleId(principal.getName()).getNickname();
-        }
+        String name = userService.findNickname(principal).getNickname();
 
         Comment comment1 = Comment.builder()
                 .comment(comment)

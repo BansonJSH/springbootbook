@@ -8,19 +8,42 @@
 </head>
 
 <body th:fragment="bodyFragment (name)">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/articles}">banson's Blog</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a th:unless="${name == null}" class="nav-link" th:href="@{/myArticles}" th:text="#{mytitle}">내글보기</a>
+                </li>
+                <li class="nav-item">
+                    <a th:unless="${name == null}" class="nav-link" th:href="@{/userInfo}" th:text="#{userinfo}" style="float:right; margin-right:10px">내 정보 수정</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a th:if="${name == null}" class="nav-link" th:href="@{/signup}" style="float:right" th:text="#{signup}">회원가입</a>
+                </li>
+                <li class="nav-item">
+                    <a th:if="${name == null}" class="nav-link" th:href="@{/login}" th:text="#{login}" style="text:right; margin-right:10px">로그인</a>
+                </li>
+                <li class="nav-item">
+                    <a th:unless="${name == null}" class="nav-link" th:href="@{/logout}" style="float:right" th:text="#{logout}">로그아웃</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
 <div class="p-5 mb-5 text-center</> bg-light">
     <h1 class="mb-3"><a th:href="@{/articles}" style="color:black; text-decoration: none">banson's Blog</a></h1>
     <h4 class="mb-3" th:text="#{welcome}">환영합니다.</h4>
-
-    <!--로그인, 회원가입, 로그아웃-->
-    <button th:if="${name == null}" type="button" class="btn btn-secondary" onclick="location.href='/signup'" style="float:right"
-            th:text="#{signup}">회원가입
-    </button>
-    <a th:if="${name == null}" type="button" class="btn btn-secondary" th:href="@{/login}"
-       th:text="#{login}" style="float:right; margin-right:10px">로그인</a>
-    <button th:unless="${name == null}" type="button" class="btn btn-secondary" onclick="location.href='/logout'" style="float:right"
-            th:text="#{logout}">로그아웃</button>
-    <p th:unless="${name == null}" th:text="${name} + #{hello}" style="float:right; margin-right:10px; margin-top:8px"></p>
+    <p th:unless="${name == null}" th:text="|'${name}' #{hello}|" style="float:right; margin-right:10px; margin-top:8px"></p>
 </div>
 </body>
 </html>

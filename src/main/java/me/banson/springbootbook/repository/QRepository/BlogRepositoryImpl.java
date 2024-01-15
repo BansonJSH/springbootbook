@@ -12,16 +12,35 @@ import static me.banson.springbootbook.domain.QArticle.article;
 
 @RequiredArgsConstructor
 @Repository
-public class BlogRepositoryImpl implements BlogRepositoryCustom{
+public class BlogRepositoryImpl implements BlogRepositoryCustom {
     public final JPAQueryFactory jpaQueryFactory;
 
-    public List<Article> findMyTitle(String name) {
-        JPAQuery<Article> articles = jpaQueryFactory
+    public List<Article> findMyArticle(String name, int pageNo, String search) {
+        List<Article> articleList = jpaQueryFactory
                 .selectFrom(article)
-                .where(article.author.like(name))
-                .orderBy(article.content.desc());
-
-        List<Article> articleList = articles.fetch();
+                .where(article.author.eq(name), article.title.contains(search))
+                .orderBy(article.createdAt.desc())
+                .offset(pageNo)
+                .limit(3)
+                .fetch();
         return articleList;
+    }
+
+    public Long countMyArticle(String name, String search) {
+        Long totalArticles = jpaQueryFactory
+                .select(article)
+                .from(article)
+                .where(article.author.eq(name), article.title.contains(search))
+                .fetchCount();
+
+        return totalArticles;
+    }
+
+    public void removeFile(Long id) {
+        jpaQueryFactory
+                .update(article)
+                .set(article.originalFileName, (String) null)
+                .where(article.id.eq(id))
+                .execute();
     }
 }

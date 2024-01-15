@@ -10,6 +10,11 @@ Spring:
       password: root
       database: comment
 
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 10MB
+
   messages:
     basename: errors,messages
 
@@ -47,3 +52,6 @@ spring-doc:
   # 해당 패턴에 매칭되는 controller만 swagger-ui에 노출한다.
   paths-to-match:
     - /api/**
+
+file:
+  dir: C:\study/springFiles/

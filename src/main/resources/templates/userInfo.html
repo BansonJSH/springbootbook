@@ -16,40 +16,25 @@
   <div class="container-fluid row justify-content-center align-content-center">
     <div class="card bg-dark" style="border-radius: 1rem;">
       <div class="card-body p-5 text-center">
-        <h2 class="text-white">SIGN UP</h2>
-        <p class="text-white-50 mt-2 mb-5" th:text="#{signupguide}">서비스 사용을 위한 회원 가입</p>
+        <h2 class="text-white">change user password</h2>
+        <p class="text-white-50 mt-2 mb-5" th:text="#{userinfoglobal}">비밀번호 변경</p>
         <p class="text-white-50 mt-2 mb-1" th:text="${fail}" th:color="red"></p>
 
         <div class = "mb-2">
-          <form th:action="@{/signup}" th:object="${user}" method="POST">
+          <form th:action="@{/userInfo}" th:object="${userInfo}" method="POST">
 
+            <input type="hidden" th:field="*{email}">
             <div th:if="${#fields.hasGlobalErrors()}">
-              <p class="field-error" style="color:red" th:each="err : ${#fields.globalErrors()}" th:text="${err}">잘못된 회원가입임!!</p>
-            </div>
-
-            <!-- 토큰을 추가하여 CSRF 공격 방지 -->
-            <div class="mb-3">
-              <label for="email" class="form-label text-white">Email address</label>
-              <input type="email" id="email" th:field="*{email}" class="form-control">
-              <div style="color:red" th:errors="*{email}">
-                이메일을 다시 입력하세요.
-              </div>
+              <p class="field-error" style="color:red" th:each="err : ${#fields.globalErrors()}" th:text="${err}">잘못된 변경임!!</p>
             </div>
             <div class="mb-3">
               <label for="password" class="form-label text-white">Password</label>
-              <input type="password" id="password" th:field="*{password}" class="form-control">
+              <input id="password" type="password" th:field="*{password}" class="form-control">
               <div style="color:red" th:errors="*{password}">
                 비밀번호를 다시 입력하세요.
               </div>
             </div>
-            <div class="mb-3">
-              <label for="nickname" class="form-label text-white">NickName</label>
-              <input id="nickname" type="text" th:field="*{nickname}" class="form-control">
-              <div style="color:red" th:errors="*{nickname}">
-                닉네임을 다시 입력하세요.
-              </div>
               <br>
-            </div>
 
             <button type="submit" class="btn btn-primary" th:text="#{register}">등록</button>
           </form>

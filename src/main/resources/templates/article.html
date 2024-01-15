@@ -17,6 +17,11 @@
         <section class="mb-5">
           <p class="fs-5 mb-4" th:text="${article.content}"></p>
         </section>
+        <section>
+          <label th:text="|#{originalFileName}: |"></label>
+          <a th:if="${article.originalFileName}" th:href="|/attach/${article.id}|"
+                   th:text="${article.getOriginalFileName()}" /><br/>
+        </section>
         <a th:if="${name == article.author}" th:href="@{/new-article(id=${article.id})}"
            class="btn btn-primary btn-sm" th:text="#{update}">수정</a>
 
@@ -53,7 +58,7 @@
     <div class="col-lg-8">
       <div th:each="comments:${comments}">
         <form th:action="@{/articles/delete-comment}" method="POST">
-          <p class="text-muted fst-italic mb-1" th:text="|nickname: ${comments.nickname}|"></p>
+          <p class="text-muted fst-italic mb-1" th:text="${comments.nickname}"></p>
           <button th:if="${name == comments.nickname}" type="submit" class="btn btn-danger" style="float:right"
                   th:text="#{delete}">삭제</button>
           <p class="fs-5 mb-1" th:text="${comments.comment}"></p>
@@ -63,8 +68,39 @@
       </div>
     </div>
   </div>
+
+  <!--paging 부분-->
+  <div th:if="${!comments.isEmpty()}">
+    <ul class="pagination justify-content-center">
+
+      <li class="page-item">
+        <a class="page-link" th:if="${nowPage != firstPage}" th:href="|/articles/${article.id}?page=1|"
+           th:text="#{firstpage}">처음</a>
+      </li>
+
+      <li class="page-item" th:if="${nowPage != firstPage}">
+        <a class="page-link" th:href="|/articles/${article.id}?page=${nowPage}|" th:text="#{prepage}">이전</a>
+      </li>
+
+      <li class="page-item" th:each="page:${#numbers.sequence(firstPage+1,lastPage+1)}">
+        <a class="page-link" th:if="${page != nowPage+1}" th:href="|/articles/${article.id}?page=${page}|" th:text ="${page}"></a>
+        <span class="page-link" th:if="${page==nowPage+1}" th:text ="${page}" style="color:black"></span>
+      </li>
+
+      <li class="page-item" th:if="${nowPage != lastPage}">
+        <a class="page-link" th:href="|/articles/${article.id}?page=${nowPage+2}|"
+           th:text="#{nextpage}">다음</a>
+      </li>
+
+      <li class="page-item">
+        <a class="page-link" th:if="${nowPage != lastPage}" th:text="#{lastpage}"
+           th:href="|/articles/${article.id}?page=${comments.totalPages}|">마지막</a>
+      </li>
+    </ul>
+  </div>
 </div>
 
-<script src="/js/article.js"></script>
 </body>
+
+<div th:insert="~{/common-footer :: footerFragment}"></div>
 </html>

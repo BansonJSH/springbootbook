@@ -39,9 +39,11 @@ dependencies {
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
     annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
     annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 }
 
+//querydsl 설정
 def querydslDir = "$buildDir/generated/querydsl"
 
 querydsl {
@@ -70,7 +72,7 @@ tasks.named('test') {
 }
 
 clean {
-    delete file('$buildDir/generated/querydsl')
+    delete file('$buildDir/main/generated')
 }
 
 test {
