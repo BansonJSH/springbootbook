@@ -18,8 +18,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     public Page<Comment> findByArticleId(Pageable pageable, String articleId) {
-        int pageNo = pageable.getPageNumber()-1;
-        return commentRepository.findByArticleId(PageRequest.of(pageNo, 3, Sort.by("id").descending()), articleId);
+        return commentRepository.findByArticleId(PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize(), Sort.by("id").descending()), articleId);
     }
 
     @Transactional

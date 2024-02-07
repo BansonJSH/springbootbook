@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:insert="~{/common-head :: headerFragment}"></div>
-<div th:insert="~{/common-head :: bodyFragment (${name})}"></div>
+<div th:insert="~{common-head :: headerFragment}"></div>
+<div th:insert="~{common-head :: bodyFragment (${name})}"></div>
 
 <body>
 <div class="container mt-5">
@@ -10,7 +10,7 @@
       <article>
         <input type="hidden" id="article-id" th:value="${article.id}">
         <header class="mb-4">
-          <h1 class="fw-bolder mb-1" th:text="${article.title}"></h1>
+          <h1 class="fw-bolder mb-2" th:text="${article.title}" style="overflow: auto"></h1>
           <div class="text-muted fst-italic mb-2" th:text="|Posted on ${#temporals.format(article.updatedAt,
 'yyyy-MM-dd HH:mm')} By ${article.author}|"></div>
         </header>
@@ -26,6 +26,7 @@
            class="btn btn-primary btn-sm" th:text="#{update}">수정</a>
 
         <button class="btn btn-primary btn-sm"
+                th:if="${name == article.author}"
                 onclick="location.href='articleList.html'"
                 th:onclick="|location.href='@{/delete-article(id=${article.id})}'|"
                 type="button" th:text="#{delete}">삭제</button>
@@ -61,7 +62,7 @@
           <p class="text-muted fst-italic mb-1" th:text="${comments.nickname}"></p>
           <button th:if="${name == comments.nickname}" type="submit" class="btn btn-danger" style="float:right"
                   th:text="#{delete}">삭제</button>
-          <p class="fs-5 mb-1" th:text="${comments.comment}"></p>
+          <p class="fs-5 mb-1" th:text="${comments.comment}" style="overflow: auto"></p>
           <input type="hidden" name="id" th:value="${comments.id}">
         </form>
         <hr>
@@ -72,29 +73,28 @@
   <!--paging 부분-->
   <div th:if="${!comments.isEmpty()}">
     <ul class="pagination justify-content-center">
-
       <li class="page-item">
-        <a class="page-link" th:if="${nowPage != firstPage}" th:href="|/articles/${article.id}?page=1|"
+        <a class="page-link" th:if="${nowPage != 1}" th:href="|/articles/${article.id}?page=1|"
            th:text="#{firstpage}">처음</a>
       </li>
 
-      <li class="page-item" th:if="${nowPage != firstPage}">
-        <a class="page-link" th:href="|/articles/${article.id}?page=${nowPage}|" th:text="#{prepage}">이전</a>
+      <li class="page-item" th:if="${nowPage != 1}">
+        <a class="page-link" th:href="|/articles/${article.id}?page=${nowPage-1}|" th:text="#{prepage}">이전</a>
       </li>
 
-      <li class="page-item" th:each="page:${#numbers.sequence(firstPage+1,lastPage+1)}">
-        <a class="page-link" th:if="${page != nowPage+1}" th:href="|/articles/${article.id}?page=${page}|" th:text ="${page}"></a>
-        <span class="page-link" th:if="${page==nowPage+1}" th:text ="${page}" style="color:black"></span>
+      <li class="page-item" th:each="page: ${#numbers.sequence(firstPage,lastPage)}">
+        <a class="page-link" th:if="${page != nowPage}" th:href="|/articles/${article.id}?page=${page}|" th:text ="${page}"></a>
+        <span class="page-link" th:if="${page==nowPage}" th:text ="${page}" style="color:black"></span>
       </li>
 
       <li class="page-item" th:if="${nowPage != lastPage}">
-        <a class="page-link" th:href="|/articles/${article.id}?page=${nowPage+2}|"
+        <a class="page-link" th:href="|/articles/${article.id}?page=${nowPage+1}|"
            th:text="#{nextpage}">다음</a>
       </li>
 
       <li class="page-item">
         <a class="page-link" th:if="${nowPage != lastPage}" th:text="#{lastpage}"
-           th:href="|/articles/${article.id}?page=${comments.totalPages}|">마지막</a>
+           th:href="|/articles/${article.id}?page=${totalPage}|">마지막</a>
       </li>
     </ul>
   </div>
@@ -102,5 +102,5 @@
 
 </body>
 
-<div th:insert="~{/common-footer :: footerFragment}"></div>
+<div th:insert="~{common-footer :: footerFragment}"></div>
 </html>

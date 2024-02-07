@@ -2,6 +2,7 @@ package me.banson.springbootbook.service;
 
 import lombok.RequiredArgsConstructor;
 import me.banson.springbootbook.domain.Article;
+import me.banson.springbootbook.domain.User;
 import me.banson.springbootbook.dto.ArticleDto;
 import me.banson.springbootbook.repository.BlogRepository;
 import me.banson.springbootbook.repository.QRepository.BlogRepositoryImpl;
@@ -29,20 +30,20 @@ public class BlogService {
     private final BlogRepositoryImpl qBlogRepository;
 
     @Transactional
-    public Article save(ArticleDto request, String userName) throws IOException {
+    public Article save(ArticleDto request, User user) throws IOException {
         Article article = Article.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
-                .author(userName)
+                .author(user.getNickname())
                 .originalFileName(request.getOriginalFileName().getOriginalFilename())
                 .storeFileName(fileStore.storeFiles(request.getOriginalFileName()))
+                .user(user)
                 .build();
         return blogRepository.save(article);
     }
 
     public Page<Article> findByTitleContaining(Pageable pageable, String search) {
-        int pageNo = pageable.getPageNumber()-1;
-        return blogRepository.findByTitleContaining(PageRequest.of(pageNo, 3, Sort.by("createdAt").descending()), search);
+        return blogRepository.findByTitleContaining(PageRequest.of(pageable.getPageNumber()-1,pageable.getPageSize(), Sort.by("createdAt").descending()), search);
     }
 
     public Article findById(long id) {
@@ -73,13 +74,8 @@ public class BlogService {
         return article;
     }
 
-    public List<Article> findMyArticle(String name, Pageable pageable, String search) {
-        int pageNo = (pageable.getPageNumber()-1) * 3;
-        return qBlogRepository.findMyArticle(name, pageNo, search);
-    }
-
-    public Long countMyArticle(String name, String search) {
-        return qBlogRepository.countMyArticle(name, search);
+    public Page<Article> findMyArticle(String name, Pageable pageable, String search) {
+        return qBlogRepository.findMyArticle(name, PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize()), search);
     }
 
     @Transactional

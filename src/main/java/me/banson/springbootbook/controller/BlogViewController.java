@@ -1,8 +1,10 @@
 package me.banson.springbootbook.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.banson.springbootbook.domain.Article;
 import me.banson.springbootbook.domain.Comment;
+import me.banson.springbootbook.domain.User;
 import me.banson.springbootbook.dto.ArticleDto;
 import me.banson.springbootbook.service.BlogService;
 import me.banson.springbootbook.service.CommentService;
@@ -31,6 +33,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class BlogViewController {
 
     private final BlogService blogService;
@@ -49,7 +52,7 @@ public class BlogViewController {
     @ModelAttribute("name")
     private String userName(Principal principal) {
         if (isAuthenticated()) {
-            String name = userService.findNickname(principal).getNickname();
+            String name = userService.findUser(principal).getNickname();
             return name;
         }
             return null;
@@ -58,23 +61,23 @@ public class BlogViewController {
     //전체 게시물 조회
     @GetMapping("/articles")
     public String getArticles(Model model, @PageableDefault(size = 3, page = 1) Pageable pageable,
-                              @RequestParam(required = false, defaultValue = "") String search) {
+                              @RequestParam(required = false, defaultValue = "") String search, Principal principal) {
         Page<Article> articles = blogService.findByTitleContaining(pageable, search);
         model.addAttribute("articles", articles);
-        int nowPage = articles.getPageable().getPageNumber();
-        int firstPage = 0;
-        int lastPage = articles.getTotalPages() - 1;
 
-        if (nowPage - 4 >= 0) {
-            firstPage = nowPage - 4;
-        } else if (nowPage + 4 <= lastPage) {
-            lastPage = nowPage + 4;
+        int nowPage = pageable.getPageNumber(); //1
+        int firstPage = (nowPage-1) / 10 * 10 + 1;
+        int lastPage = (nowPage-1) / 10 * 10 + 10;
+
+        if (lastPage > articles.getTotalPages()) {
+            lastPage = articles.getTotalPages();
         }
 
         model.addAttribute("nowPage", nowPage);
-        model.addAttribute("firstPage", firstPage);
         model.addAttribute("lastPage", lastPage);
         model.addAttribute("search", search);
+        model.addAttribute("firstPage", firstPage);
+        model.addAttribute("totalPage", articles.getTotalPages());
 
         return "articleList";
     }
@@ -87,19 +90,18 @@ public class BlogViewController {
         Page<Comment> comments = commentService.findByArticleId(pageable, String.valueOf(id));
         model.addAttribute("comments", comments);
 
-        int nowPage = comments.getPageable().getPageNumber();
-        int firstPage = 0;
-        int lastPage = comments.getTotalPages() - 1;
+        int nowPage = pageable.getPageNumber(); //1
+        int firstPage = (nowPage-1) / 10 * 10 + 1;
+        int lastPage = (nowPage-1) / 10 * 10 + 10;
 
-        if (nowPage - 4 >= 0) {
-            firstPage = nowPage - 4;
-        } else if (nowPage + 4 <= lastPage) {
-            lastPage = nowPage + 4;
+        if (lastPage > comments.getTotalPages()) {
+            lastPage = comments.getTotalPages();
         }
 
         model.addAttribute("nowPage", nowPage);
-        model.addAttribute("firstPage", firstPage);
         model.addAttribute("lastPage", lastPage);
+        model.addAttribute("firstPage", firstPage);
+        model.addAttribute("totalPage", comments.getTotalPages());
 
         return "article";
     }
@@ -121,12 +123,13 @@ public class BlogViewController {
     @PostMapping("/new-article")
     public String newArticle(@ModelAttribute("article") ArticleDto articleDto, Model model, Principal principal) throws IOException {
         Article article;
+        User user = userService.findUser(principal);
 
         if (articleDto.getId() != null) {
             article = blogService.update(articleDto);
         }
         else {
-            article = blogService.save(articleDto, this.userName(principal));
+            article = blogService.save(articleDto, user);
         }
 
         model.addAttribute("article", article);
@@ -180,25 +183,22 @@ public class BlogViewController {
     public String myArticles(Model model, Principal principal, @PageableDefault(sort = "id", size = 3, page = 1) Pageable pageable,
                              @RequestParam(required = false, defaultValue = "") String search) {
         String name = this.userName(principal);
-        List<Article> articles = blogService.findMyArticle(name, pageable, search);
+        Page<Article> articles = blogService.findMyArticle(name, pageable, search);
         model.addAttribute("articles", articles);
-        Long totalArticle = blogService.countMyArticle(name, search);
 
-        int nowPage = pageable.getPageNumber() - 1; //0
-        int firstPage = 1;
-        int lastPage = (int) ((totalArticle-1)/3 + 1);
+        int nowPage = pageable.getPageNumber(); //0
+        int firstPage = (nowPage-1) / 10 * 10 + 1;
+        int lastPage = (nowPage-1) / 10 * 10 + 10;
 
-        if (nowPage - 4 > 0) {
-            firstPage = nowPage - 4;
-        } else if (nowPage + 4 < lastPage) {
-            lastPage = nowPage + 4;
+        if (lastPage > articles.getTotalPages()) {
+            lastPage = articles.getTotalPages();
         }
 
-        model.addAttribute("nowPage", nowPage + 1);
-        model.addAttribute("firstPage", firstPage);
+        model.addAttribute("nowPage", nowPage);
         model.addAttribute("lastPage", lastPage);
         model.addAttribute("search", search);
-        model.addAttribute("totalPage", ((totalArticle-1)/3 + 1));
+        model.addAttribute("firstPage", firstPage);
+        model.addAttribute("totalPage", articles.getTotalPages());
         return "myArticles";
     }
 }

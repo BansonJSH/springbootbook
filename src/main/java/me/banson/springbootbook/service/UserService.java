@@ -62,11 +62,6 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Unexpected user"));
     }
 
-    public User findByGoogleId(String googleId) {
-        return userRepository.findByGoogleId(googleId)
-                .orElseThrow();
-    }
-
     @Transactional
     public User changePassword(AddUserRequest addUserRequest) {
         User user = userRepository.findByEmail(addUserRequest.getEmail())
@@ -75,13 +70,8 @@ public class UserService {
         return user;
     }
 
-    public User findNickname(Principal principal) {
-        User user;
-        if (principal.getName().contains("@")) {
-            user = this.findByEmail(principal.getName());
-        } else {
-            user = this.findByGoogleId(principal.getName());
-        }
+    public User findUser(Principal principal) {
+        User user = this.findByEmail(principal.getName());
         return user;
     }
 }

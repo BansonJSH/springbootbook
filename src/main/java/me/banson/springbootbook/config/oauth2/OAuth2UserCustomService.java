@@ -3,6 +3,7 @@ package me.banson.springbootbook.config.oauth2;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import me.banson.springbootbook.domain.User;
+import me.banson.springbootbook.dto.OAuth2UserInfo;
 import me.banson.springbootbook.repository.UserRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,15 +27,18 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws
             OAuth2AuthenticationException {
         OAuth2User user = super.loadUser(userRequest);
-        User user1 = saveOrUpdate(user);
-        UsernamePasswordAuthenticationToken.authenticated(user1, "", List.of(new SimpleGrantedAuthority("user")));
-        return user;
+        saveOrUpdate(user);
+        OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfo.builder()
+                .name(user.getAttribute("email"))
+                .attributes(user.getAttributes())
+                .authorities(user.getAuthorities()).build();
+        UsernamePasswordAuthenticationToken.authenticated(oAuth2UserInfo, "", List.of(new SimpleGrantedAuthority("user")));
+        return oAuth2UserInfo;
     }
 
     private User saveOrUpdate(OAuth2User oAuth2User) {
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
-        String googleId = oAuth2User.getAttribute("sub");
         String password = String.valueOf(UUID.randomUUID());
         User user = userRepository.findByEmail(email)
                 .map(entity -> entity.update(name))
@@ -42,7 +46,6 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
                         .email(email)
                         .nickname(name)
                         .password(password)
-                        .googleId(googleId)
                         .build());
         return userRepository.save(user);
     }

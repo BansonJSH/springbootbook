@@ -21,7 +21,7 @@ public class CommentController {
 
     @PostMapping("/articles/new-comment")
     public String createComment(@RequestParam String articleId, @RequestParam String comment, Principal principal) {
-        String name = userService.findNickname(principal).getNickname();
+        String name = userService.findUser(principal).getNickname();
 
         Comment comment1 = Comment.builder()
                 .comment(comment)

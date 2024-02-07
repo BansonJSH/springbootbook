@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:insert="~{/common-head :: headerFragment}"></div>
-<div th:insert="~{/common-head :: bodyFragment (${name})}"></div>
+<div th:insert="~{common-head :: headerFragment}"></div>
+<div th:insert="~{common-head :: bodyFragment (${name})}"></div>
 
 <body>
 <!--글등록과 상세보기-->
@@ -37,12 +37,12 @@
     <ul class="pagination justify-content-center">
 
       <li class="page-item">
-        <a class="page-link" th:if="${nowPage != firstPage}" th:href="@{/myArticles(page=1,search=${search})}"
+        <a class="page-link" th:if="${nowPage != 1}" th:href="@{/myArticles(page=1,search=${search})}"
            th:text="#{firstpage}">첫 페이지 </a>
       </li>
 
-      <li class="page-item" th:if="${nowPage != firstPage}">
-        <a class="page-link" th:href="@{/myArticles(page=${nowPage},search=${search})}" th:text="#{prepage}"> 이전 </a>
+      <li class="page-item" th:if="${nowPage != 1}">
+        <a class="page-link" th:href="@{/myArticles(page=${nowPage-1},search=${search})}" th:text="#{prepage}"> 이전 </a>
       </li>
 
       <li class="page-item" th:each="page:${#numbers.sequence(firstPage, lastPage)}">
@@ -56,7 +56,7 @@
       </li>
 
       <li class="page-item">
-        <a class="page-link" th:if="${nowPage != totalPage}" th:text="#{lastpage}"
+        <a class="page-link" th:if="${nowPage != lastPage}" th:text="#{lastpage}"
            th:href="@{/myArticles(page=${totalPage},search=${search})}"> 마지막 페이지</a>
       </li>
     </ul>
@@ -65,5 +65,5 @@
 
 </body>
 
-<div th:insert="~{/common-footer :: footerFragment}"></div>
+<div th:insert="~{common-footer :: footerFragment}"></div>
 </html>

@@ -32,7 +32,7 @@ public class UserViewController {
 
     @GetMapping("/userInfo")
     public String userInfo(Model model, Principal principal) {
-        User user = userService.findNickname(principal);
+        User user = userService.findUser(principal);
         AddUserRequest userRequest = AddUserRequest.builder()
                 .email(user.getEmail())
                 .nickname(user.getNickname())

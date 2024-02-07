@@ -1,9 +1,13 @@
 package me.banson.springbootbook.repository.QRepository;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import me.banson.springbootbook.domain.Article;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,25 +19,19 @@ import static me.banson.springbootbook.domain.QArticle.article;
 public class BlogRepositoryImpl implements BlogRepositoryCustom {
     public final JPAQueryFactory jpaQueryFactory;
 
-    public List<Article> findMyArticle(String name, int pageNo, String search) {
-        List<Article> articleList = jpaQueryFactory
+    public Page<Article> findMyArticle(String name, Pageable pageable, String search) {
+        QueryResults<Article> articleList = jpaQueryFactory
                 .selectFrom(article)
                 .where(article.author.eq(name), article.title.contains(search))
                 .orderBy(article.createdAt.desc())
-                .offset(pageNo)
-                .limit(3)
-                .fetch();
-        return articleList;
-    }
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
 
-    public Long countMyArticle(String name, String search) {
-        Long totalArticles = jpaQueryFactory
-                .select(article)
-                .from(article)
-                .where(article.author.eq(name), article.title.contains(search))
-                .fetchCount();
+        List<Article> articles = articleList.getResults();
+        long total = articleList.getTotal();
 
-        return totalArticles;
+        return new PageImpl<>(articles, pageable, total);
     }
 
     public void removeFile(Long id) {

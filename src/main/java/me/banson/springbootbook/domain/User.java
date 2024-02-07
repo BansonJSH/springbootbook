@@ -12,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "email", nullable = false, unique = true)
@@ -46,10 +47,14 @@ public class User implements UserDetails {
     @Column(name = "nickname", unique = true)
     private String nickname;
 
-    @Column(name = "googleId")
-    private String googleId;
+    @OneToMany(mappedBy = "user")
+    private List<Article> article = new ArrayList<>();
 
     public User() {
+    }
+
+    public void addArticle(Article article) {
+        this.article.add(article);
     }
 
     @Builder
@@ -57,7 +62,6 @@ public class User implements UserDetails {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
-        this.googleId = googleId;
     }
 
     public User update(String nickname) {

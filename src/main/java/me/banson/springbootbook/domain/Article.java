@@ -3,10 +3,12 @@ package me.banson.springbootbook.domain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.banson.Main;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -27,10 +29,12 @@ public class Article {
 
     @Column(name = "title", nullable = false)
     @NotEmpty(message = "비어있을 수 없음")
+    @Size(max = 30)
     private String title;
 
     @Column(name = "content", nullable = false)
     @NotEmpty(message = "비어있을 수 없음")
+    @Size(max = 100)
     private String content;
 
     @CreatedDate
@@ -49,13 +53,19 @@ public class Article {
 
     private String storeFileName;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
-    public Article(String title, String content, String author, String originalFileName, String storeFileName) {
+    public Article(String title, String content, String author, String originalFileName, String storeFileName, User user) {
         this.title = title;
         this.content = content;
         this.author = author;
         this.originalFileName = originalFileName;
         this.storeFileName = storeFileName;
+        this.user = user;
+        user.addArticle(this);
     }
 
     public void update(String title, String content, String originalFileName, String storeFileName) {

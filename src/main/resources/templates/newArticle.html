@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:insert="~{/common-head :: headerFragment}"></div>
-<div th:insert="~{/common-head :: bodyFragment (${name})}"></div>
+<div th:insert="~{common-head :: headerFragment}"></div>
+<div th:insert="~{common-head :: bodyFragment (${name})}"></div>
 
 <body>
 <div class="container mt-5">
@@ -58,5 +58,5 @@
 
 </body>
 
-<div th:insert="~{/common-footer :: footerFragment}"></div>
+<div th:insert="~{common-footer :: footerFragment}"></div>
 </html>
