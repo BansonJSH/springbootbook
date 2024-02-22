@@ -26,15 +26,6 @@ jobs:
 
       - name: make mail file
         run: |
-          cd ./src/main/java/me/banson/springbootbook/config
-          mkdir javamail
-          cd ./javamail
-          touch ./JavaMailConfig.java
-          echo "${{ secrets.JAVAMAIL }}" > ./JavaMailConfig.java
-        shell: bash
-
-      - name: make mail file
-        run: |
           touch ./docker-compose.yml
           echo "${{ secrets.DOCKER_COMPOSE }}" > ./docker-compose.yml
         shell: bash
