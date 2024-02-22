@@ -24,11 +24,10 @@ jobs:
           echo "${{ secrets.OAUTH2_YML }}" > ./application-oauth.yml
         shell: bash
 
-      - name: make mail file
+      - name: make docker file
         run: |
           touch ./docker-compose.yml
           echo "${{ secrets.DOCKER_COMPOSE }}" > ./docker-compose.yml
-        shell: bash
 
       - name: Permission for gradlew
         run: chmod +x gradlew
