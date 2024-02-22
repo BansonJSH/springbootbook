@@ -20,7 +20,7 @@
   <br>
   <div class="row-6" th:each="article, i: ${articles}">
     <div class="card">
-      <div class="card-header" th:text="${nowPage*3 + i.index+1}">
+      <div class="card-header" th:text="${(nowPage-1)*3 + i.index+1}">
       </div>
       <div class="card-body">
         <h5 class="card-title" th:text="${article.title}"></h5>

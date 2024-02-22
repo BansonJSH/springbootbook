@@ -1,9 +1,25 @@
 Spring:
   profiles:
     include: oauth
+
+  #host.docker.internal
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/board?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: 1234
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+      dialect: org.hibernate.dialect.MySQLDialect
+
   data:
     mongodb:
-      host: localhost
+      host: springbootbookmongodb
       port: 27017
       authentication-database: admin
       username: root
@@ -54,4 +70,4 @@ spring-doc:
     - /api/**
 
 file:
-  dir: C:\study/springFiles/
+  dir: /root/study/springFiles/

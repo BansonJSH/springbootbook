@@ -44,3 +44,5 @@ bin/
 ### mine ###
 src/main/java/me/banson/springbootbook/config/javamail/JavaMailConfig.java
 application-oauth.yml
+application.yml
+docker-compose.yml
