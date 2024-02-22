@@ -22,10 +22,23 @@ jobs:
           echo "${{ secrets.OAUTH2_YML }}" > ./application-oauth.yml
         shell: bash
 
+      - name: make mail file
+        run: |
+          cd ./src/main/java/me/banson/springbootbook/config/javamail
+          touch ./JavaMailConfig.java
+          echo "${{ secrets.JAVAMAIL }}" > ./JavaMailConfig.java
+        shell: bash
+
+      - name: make mail file
+        run: |
+          touch ./docker-compose.yml
+          echo "${{ secrets.DOCKER_COMPOSE }}" > ./docker-compose.yml
+        shell: bash
+
       - name: Permission for gradlew
         run: chmod +x gradlew
       - name: Build gradle
-        run: ./gradlew build
+        run: ./gradlew clean build
 
       - name: Docker-compose build
         run: |
