@@ -5,13 +5,13 @@ permissions:
   contents: read
 
 jobs:
-  CI:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up JDK 17
+      - name: Set up JDK 18
         uses: actions/checkout@v3
         with:
-          java-version: '17'
+          java-version: '18'
 
       - name: make .yml file
         run: |
