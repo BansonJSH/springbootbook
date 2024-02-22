@@ -28,6 +28,7 @@ jobs:
         run: |
           touch ./docker-compose.yml
           echo "${{ secrets.DOCKER_COMPOSE }}" > ./docker-compose.yml
+        shell: bash
 
       - name: Permission for gradlew
         run: chmod +x gradlew
