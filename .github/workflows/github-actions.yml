@@ -1,0 +1,35 @@
+name: CI using github actions & docker-compose
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up JDK 17
+        uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: make .yml file
+        run: |
+          cd ./src/main/resources
+          touch ./application.yml
+          touch ./application-oauth.yml
+          echo "${{ secrets.YML }}" > ./application.yml
+          echo "${{ secrets.OAUTH2_YML }}" > ./application-oauth.yml
+        shell: bash
+
+      - name: Build gradle
+        run: ./gradlew build -x test
+
+      - name: Docker-compose build
+        run: |
+          docker-compoase up --build
