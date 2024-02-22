@@ -24,7 +24,9 @@ jobs:
 
       - name: make mail file
         run: |
-          cd ./src/main/java/me/banson/springbootbook/config/javamail
+          cd ./src/main/java/me/banson/springbootbook/config
+          mkdir javamail
+          cd ./javamail
           touch ./JavaMailConfig.java
           echo "${{ secrets.JAVAMAIL }}" > ./JavaMailConfig.java
         shell: bash
