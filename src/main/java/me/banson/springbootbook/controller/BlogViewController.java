@@ -42,6 +42,7 @@ public class BlogViewController {
     private final FileStore fileStore;
     private final String PR;
     private final int ppap;
+    private final int ppappp;
 
     private boolean isAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
