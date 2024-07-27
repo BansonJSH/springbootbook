@@ -40,6 +40,7 @@ public class BlogViewController {
     private final UserService userService;
     private final CommentService commentService;
     private final FileStore fileStore;
+    private final String PR;
 
     private boolean isAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
